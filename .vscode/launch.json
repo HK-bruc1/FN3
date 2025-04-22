@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "args": [],
+      "stopAtEntry": false,
+      "console": "externalTerminal",
+      "cwd": "f:/JL_项目/7003D8/东华翔/Y90-Y91-Y92/Y90-Y91-Y92--双麦ANC+ENC/SDK/dhf-v138-noapp/cpu/br36",
+      "program": "f:/JL_项目/7003D8/东华翔/Y90-Y91-Y92/Y90-Y91-Y92--双麦ANC+ENC/SDK/dhf-v138-noapp/cpu/br36/build/Debug/outDebug"
+    }
+  ]
+}
