@@ -222,7 +222,7 @@ void app_main()
     u32 addr = 0, size = 0;
     struct intent it;
 
-
+    r_printf("进入app_main项目入口\n");
     log_info("app_main\n");
     app_var.start_time = timer_get_ms();
 

@@ -5156,9 +5156,9 @@ LOAD C:/JL/pi32/pi32v2-lib/r3/libm.a
 LOAD C:/JL/pi32/pi32v2-lib/r3/libcompiler-rt.a
 OUTPUT(cpu/br36/tools/sdk.elf elf32-pi32v2)
 
-.debug_str      0x00000000    0x66df2
- .debug_str     0x00000000    0x66df2 cpu/br36/tools/sdk.elf.o
-                              0x6dddc (size before relaxing)
+.debug_str      0x00000000    0x66e14
+ .debug_str     0x00000000    0x66e14 cpu/br36/tools/sdk.elf.o
+                              0x6ddfe (size before relaxing)
 
 .debug_loc      0x00000000    0x48cec
  .debug_loc     0x00000000    0x48cec cpu/br36/tools/sdk.elf.o
@@ -5169,11 +5169,11 @@ OUTPUT(cpu/br36/tools/sdk.elf elf32-pi32v2)
  .debug_abbrev  0x00001121       0x28 cpu/br36/liba/system.a(movable.S.o)
  .debug_abbrev  0x00001149       0x28 cpu/br36/liba/system.a(port_asm_mmu.S.o)
 
-.debug_info     0x00000000   0x12e878
- .debug_info    0x00000000   0x12e48b cpu/br36/tools/sdk.elf.o
- .debug_info    0x0012e48b      0x165 cpu/br36/liba/cpu.a(startup.S.o)
- .debug_info    0x0012e5f0      0x10a cpu/br36/liba/system.a(movable.S.o)
- .debug_info    0x0012e6fa      0x17e cpu/br36/liba/system.a(port_asm_mmu.S.o)
+.debug_info     0x00000000   0x12e950
+ .debug_info    0x00000000   0x12e563 cpu/br36/tools/sdk.elf.o
+ .debug_info    0x0012e563      0x165 cpu/br36/liba/cpu.a(startup.S.o)
+ .debug_info    0x0012e6c8      0x10a cpu/br36/liba/system.a(movable.S.o)
+ .debug_info    0x0012e7d2      0x17e cpu/br36/liba/system.a(port_asm_mmu.S.o)
 
 .debug_ranges   0x00000000     0x99f8
  .debug_ranges  0x00000000     0x99d0 cpu/br36/tools/sdk.elf.o
@@ -5189,23 +5189,23 @@ OUTPUT(cpu/br36/tools/sdk.elf elf32-pi32v2)
                 0x00000000    0x33abd cpu/br36/tools/sdk.elf.o
 
 .debug_pubtypes
-                0x00000000    0x1f5da
+                0x00000000    0x1f5f8
  .debug_pubtypes
-                0x00000000    0x1f5da cpu/br36/tools/sdk.elf.o
+                0x00000000    0x1f5f8 cpu/br36/tools/sdk.elf.o
 
 .debug_frame    0x00000000    0x17094
  .debug_frame   0x00000000    0x17094 cpu/br36/tools/sdk.elf.o
 
-.debug_line     0x00000000    0x8d42d
- .debug_line    0x00000000    0x8d0ad cpu/br36/tools/sdk.elf.o
- .debug_line    0x0008d0ad       0x30 objs/apps/earphone/sdk_version.z.S.o
- .debug_line    0x0008d0dd      0x102 cpu/br36/liba/cpu.a(startup.S.o)
- .debug_line    0x0008d1df       0xc5 cpu/br36/liba/system.a(movable.S.o)
- .debug_line    0x0008d2a4       0xd9 cpu/br36/liba/system.a(port_asm_mmu.S.o)
- .debug_line    0x0008d37d       0x2c cpu/br36/liba/btstack.a(version.z.o)
- .debug_line    0x0008d3a9       0x2c cpu/br36/liba/btctrler.a(version.z.o)
- .debug_line    0x0008d3d5       0x2c cpu/br36/liba/media.a(version.z.o)
- .debug_line    0x0008d401       0x2c cpu/br36/liba/update.a(version.z.o)
+.debug_line     0x00000000    0x8d48b
+ .debug_line    0x00000000    0x8d10b cpu/br36/tools/sdk.elf.o
+ .debug_line    0x0008d10b       0x30 objs/apps/earphone/sdk_version.z.S.o
+ .debug_line    0x0008d13b      0x102 cpu/br36/liba/cpu.a(startup.S.o)
+ .debug_line    0x0008d23d       0xc5 cpu/br36/liba/system.a(movable.S.o)
+ .debug_line    0x0008d302       0xd9 cpu/br36/liba/system.a(port_asm_mmu.S.o)
+ .debug_line    0x0008d3db       0x2c cpu/br36/liba/btstack.a(version.z.o)
+ .debug_line    0x0008d407       0x2c cpu/br36/liba/btctrler.a(version.z.o)
+ .debug_line    0x0008d433       0x2c cpu/br36/liba/media.a(version.z.o)
+ .debug_line    0x0008d45f       0x2c cpu/br36/liba/update.a(version.z.o)
 
 .debug_aranges  0x00000000       0x68
  .debug_aranges
