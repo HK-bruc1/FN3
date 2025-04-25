@@ -5,7 +5,7 @@
  * 系统打印总开关
  */
 
-#define LIB_DEBUG    1
+#define LIB_DEBUG    0  //打开打印
 #define CONFIG_DEBUG_LIB(x)         (x & LIB_DEBUG)
 
  #define CONFIG_DEBUG_ENABLE

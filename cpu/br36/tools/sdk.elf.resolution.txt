@@ -2827,6 +2827,7 @@ objs/apps/earphone/app_main.c.o
 -r=objs/apps/earphone/app_main.c.o,__errno,plx
 -r=objs/apps/earphone/app_main.c.o,cpu_reset_by_soft,l
 -r=objs/apps/earphone/app_main.c.o,is_ldo5v_wakeup,l
+-r=objs/apps/earphone/app_main.c.o,puts,l
 -r=objs/apps/earphone/app_main.c.o,task_info_table,pl
 -r=objs/apps/earphone/app_main.c.o,bt_user_priv_var,l
 -r=objs/apps/earphone/app_main.c.o,app_var,pl

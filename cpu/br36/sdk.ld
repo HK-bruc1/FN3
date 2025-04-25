@@ -32,17 +32,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
   local_irq_enable = ABSOLUTE(0x10fe00);
   local_irq_disable = ABSOLUTE(0x10fe04);
   lp_signature_set = ABSOLUTE(0x10fe08);
@@ -240,7 +229,6 @@
   _MASK_MEM_BEGIN = ABSOLUTE(0x2bbe0);
   _MASK_MEM_SIZE = ABSOLUTE(0x30c);
 
-
 EXTERN(
 _start
 
@@ -281,7 +269,6 @@ aac_decoder
 wtgv2_decoder
 cvsd_encoder
 msbc_encoder
-
 );
 
 
@@ -459,7 +446,6 @@ SECTIONS
  audio_cvp_data_end = .;
  audio_cvp_data_size = audio_cvp_data_end - audio_cvp_data_begin ;
 
-
   . = ALIGN(4);
 
 
@@ -572,7 +558,6 @@ SECTIONS
 
         system_data_end = .;
 
-
   . = ALIGN(4);
 
  } > ram0
@@ -594,7 +579,6 @@ SECTIONS
         *(.ECDH_sample_bss)
 
         system_bss_end = .;
-
 
         . = ALIGN(4);
         *(.bss)
@@ -657,7 +641,6 @@ SECTIONS
  *(.notchhowling_bss)
  *(.audio_track_bss)
     *(.audio_cfifo_bss)
-
 
         . = ALIGN(4);
 
@@ -1349,7 +1332,6 @@ SECTIONS
   . = ALIGN(4);
         media_text_end = .;
 
-
      audio_sync_code_begin = .;
         *(.audio_sync_code)
      audio_sync_code_end = .;
@@ -1616,8 +1598,7 @@ SECTIONS
 
 
         system_code_total_size = system_text_end - system_text_start;
-
-  . = ALIGN(4);
+ . = ALIGN(4);
         SYSTEM_CODE_SIZE = . - SYSTEM_CODE_BEGIN;
 
   . = ALIGN(4);
@@ -1756,7 +1737,6 @@ BTSTACK_LE_HOST_MESH_FLASH_TOTAL = BTSTACK_LE_HOST_MESH_CODE_SIZE;
 BTSTACK_CODE_SIZE = (btstack_code_end - btstack_code_start) + (btstack_data_end - btstack_data_start);
 
 
-
 SECTIONS
 {
     .data : ALIGN(4)
@@ -1788,7 +1768,6 @@ SECTIONS
 
     UPDATE_CODE_TOTAL_SIZE = update_code_end - update_code_start;
 }
-
 SECTIONS
 {
     .data : ALIGN(4)
@@ -1854,7 +1833,6 @@ SECTIONS
     DRIVER_RAM_TOTAL = (driver_data_end - driver_data_start) + (driver_bss_end - driver_bss_start);
     DRIVER_CODE_TOTAL = (driver_code_end - driver_code_start);
 }
-
 
 text_begin = ADDR(.text);
 text_size = SIZEOF(.text);

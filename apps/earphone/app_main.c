@@ -153,6 +153,7 @@ void clr_wdt(void);
 void check_power_on_key(void)
 {
     u32 delay_10ms_cnt = 0;
+    printf("开始检查开机按键\n");
 
     while (1) {
         clr_wdt();
@@ -164,8 +165,10 @@ void check_power_on_key(void)
             delay_10ms_cnt++;
 #if(TCFG_APP_LINEIN_EN && TCFG_ADC_IIS_ENABLE && IIS_ROLE == ROLE_S)
             if (delay_10ms_cnt > 4) {
+                printf("按键按下时间足够，开机\n");
 #else
             if (delay_10ms_cnt > 70) {
+                printf("按键按下时间足够，开机\n");
 #endif
                 return;
             }
@@ -173,6 +176,7 @@ void check_power_on_key(void)
             log_info("-");
             delay_10ms_cnt = 0;
             log_info("enter softpoweroff\n");
+            printf("按键未按下，进入软关机\n");
             power_set_soft_poweroff();
         }
     }
@@ -196,18 +200,21 @@ static void app_poweron_check(int update)
 {
 #if (CONFIG_BT_MODE == BT_NORMAL)
     if (!update && cpu_reset_by_soft()) {
+        printf("CPU软件复位，不播放开机提示音\n");
         app_var.play_poweron_tone = 0;
         return;
     }
 
 #if TCFG_CHARGE_OFF_POWERON_NE
     if (is_ldo5v_wakeup()) {
+        printf("LDO5V唤醒，不播放开机提示音\n");
         app_var.play_poweron_tone = 0;
         return;
     }
 #endif
 //#ifdef CONFIG_RELEASE_ENABLE
 #if TCFG_POWER_ON_NEED_KEY
+    printf("需要按键开机，检查开机按键\n");
     check_power_on_key();
 #endif
 //#endif
@@ -222,12 +229,16 @@ void app_main()
     u32 addr = 0, size = 0;
     struct intent it;
 
-    r_printf("进入app_main项目入口\n");
+    printf("进入SDK入口\n");
+
     log_info("app_main\n");
+    // 记录启动时间
     app_var.start_time = timer_get_ms();
+    printf("记录启动时间\n");
 
 #if (defined(CONFIG_MEDIA_NEW_ENABLE) || (defined(CONFIG_MEDIA_DEVELOP_ENABLE)))
     /*解码器*/
+    printf("进入编码器初始化以及解码器初始化\n");
     audio_enc_init();
     audio_dec_init();
 #endif
@@ -242,55 +253,71 @@ void app_main()
 #endif
 
     if (!UPDATE_SUPPORT_DEV_IS_NULL()) {
-        update = update_result_deal();
+        printf("检查升级\n");
+        update = update_result_deal();  //处理升级结果
     }
 
-    app_var_init();
+    printf("初始化应用变量\n");
+    app_var_init(); // 初始化应用变量
 
 #if TCFG_MC_BIAS_AUTO_ADJUST
+    printf("执行mc_trim_init\n");
     mc_trim_init(update);
 #endif/*TCFG_MC_BIAS_AUTO_ADJUST*/
 
     if (get_charge_online_flag()) {
+        printf("检测到充电状态\n");
 
 #if(TCFG_SYS_LVD_EN == 1)
+        printf("初始化电池电压检测\n");
         vbat_check_init();
 #endif
 
+        printf("启动idle应用\n");
         init_intent(&it);
         it.name = "idle";
         it.action = ACTION_IDLE_MAIN;
         start_app(&it);
     } else {
+        printf("非充电状态\n");
+        printf("检查开机电压\n");
         check_power_on_voltage();
 
+        printf("执行开机检查\n");
         app_poweron_check(update);
 
+        printf("初始化UI管理\n");
         ui_manage_init();
+        printf("更新UI状态为开机状态\n");
         ui_update_status(STATUS_POWERON);
 
 #if TCFG_WIRELESS_MIC_ENABLE
+        printf("启动无线麦克风\n");
         extern void wireless_mic_main_run(void);
         wireless_mic_main_run();
 #endif
 
 #if  TCFG_ENTER_PC_MODE
+        printf("启动PC模式应用\n");
         init_intent(&it);
         it.name = "pc";
         it.action = ACTION_PC_MAIN;
         start_app(&it);
 #elif TCFG_ENTER_HEARING_AID_MODE
+        printf("启动助听器模式应用\n");
         init_intent(&it);
         it.name = "hearing_aid";
         it.action = ACTION_HEARING_AID_MAIN;
         start_app(&it);
 #elif TCFG_ADC_IIS_ENABLE
+        printf("启动Linein模式应用\n");
         init_intent(&it);
         it.name = "linein";
         it.action = ACTION_LINEIN_MAIN;
         start_app(&it);
         app_curr_task = APP_LINEIN_TASK;
 #else
+        printf("启动耳机模式应用\n");
         init_intent(&it);
         it.name = "earphone";
         it.action = ACTION_EARPHONE_MAIN;
@@ -299,8 +326,10 @@ void app_main()
     }
 
 #if (TCFG_USB_CDC_BACKGROUND_RUN && !TCFG_PC_ENABLE)
+    printf("启动USB CDC后台运行\n");
     usb_cdc_background_run();
 #endif
+    printf("app_main函数执行完毕\n");
 }
 
 int __attribute__((weak)) eSystemConfirmStopStatus(void)

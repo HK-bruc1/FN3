@@ -194,6 +194,8 @@ int update_result_deal()
     u8 key_voice_cnt = 0;
     u16 result = 0;
     result = (g_updata_flag & 0xffff);
+    printf("处理升级结果\n");
+    printf("升级标志: 0x%x, 升级类型: 0x%x\n", result, g_updata_flag >> 16);
     log_info("<--------update_result_deal=0x%x %x--------->\n", result, g_updata_flag >> 16);
 #ifdef  CONFIG_DEBUG_ENABLE
 #if TCFG_APP_BT_EN
@@ -202,26 +204,35 @@ int update_result_deal()
 #endif
 #endif
     if (result == UPDATA_NON || 0 == result) {
+        printf("没有升级标志或升级标志为0，不需要处理\n");
         return 0;
     }
 #ifdef UPDATE_VOICE_REMIND
+    printf("启用升级语音提示\n");
 #endif
     if (result == UPDATA_SUCC) {
+        printf("升级成功\n");
 #if(JL_EARPHONE_APP_EN && RCSP_UPDATE_EN)
+        printf("清除升级标志\n");
         u8 clear_update_flag = 0;
         syscfg_write(VM_UPDATE_FLAG, &clear_update_flag, 1);
 #endif
 #ifdef UPDATE_LED_REMIND
+        printf("显示升级完成LED指示\n");
         led_update_finish();
 #endif
+    } else {
+        printf("升级失败，错误码: 0x%x\n", result);
     }
 
     int voice_max_cnt = 5;
+    printf("开始播放升级提示音\n");
     while (1) {
         wdt_clear();
         key_voice_cnt++;
 #ifdef UPDATE_VOICE_REMIND
         if (result == UPDATA_SUCC) {
+            printf("播放升级成功提示音\n");
             puts("<<<<<<UPDATA_SUCC");
             app_audio_set_volume(APP_AUDIO_STATE_WTONE, get_max_sys_vol() / 2, 1);
             tone_play(TONE_SIN_NORMAL, 1);
@@ -230,6 +241,7 @@ int update_result_deal()
             tone_event_clear();
         } else {
             voice_max_cnt = 20; //区分下升级失败提示音
+            printf("播放升级失败提示音，错误码: 0x%x\n", result);
             log_info("!!!!!!!!!!!!!!!updata waring !!!!!!!!!!!=0x%x\n", result);
             app_audio_set_volume(APP_AUDIO_STATE_WTONE, get_max_sys_vol(), 1);
             tone_play(TONE_SIN_NORMAL, 1);
@@ -239,12 +251,14 @@ int update_result_deal()
 #endif
         if (key_voice_cnt > voice_max_cnt) {
             key_voice_cnt = 0;
+            printf("提示音播放完毕，准备退出升级处理\n");
             puts("enter_sys_soft_poweroff\n");
             break;
             //注:关机要慎重,要设置开机键
             //enter_sys_soft_poweroff();
         }
     }
+    printf("升级处理完成\n");
 
     return 1;
 }
@@ -268,19 +282,25 @@ void update_close_hw(void *filter_name)
 
 static void update_before_jump_common_handle(UPDATA_TYPE up_type)
 {
+    printf("关闭UI界面\n");
     dev_update_close_ui();
 
 #if TCFG_AUDIO_ANC_ENABLE
+    printf("关闭ANC硬件\n");
     extern void audio_anc_hw_close();
     audio_anc_hw_close();
 #endif
 
+    printf("禁用中断\n");
     local_irq_disable();
+    printf("关闭所有硬件中断\n");
     hwi_all_close();
 
 #ifdef CONFIG_SUPPORT_WIFI_DETECT
+    printf("关闭WiFi检测\n");
     wifi_det_close();
 #endif
+    printf("准备跳转到升级程序\n");
     /*跳转的时候遇到死掉的情况很可能是硬件模块没关导致，加上保护可以判断哪个异常，保护的地址根据不同SDK而定*/
     /* u8 inv = 0; */
     /* mpu_set(1, (u32)&test_pro_addr, (u32)test_pro_addr, inv, "0r", DBG_FM); */
@@ -376,30 +396,38 @@ static void update_param_ram_set(u8 *buf, u16 len)
 
 void update_mode_api_v2(UPDATA_TYPE type, void (*priv_param_fill_hdl)(UPDATA_PARM *p), void (*priv_update_jump_handle)(int type))
 {
+    printf("准备进入升级模式，升级类型: 0x%x\n", type);
     u16 update_param_len = sizeof(UPDATA_PARM) + UPDATE_PRIV_PARAM_LEN;
 
     UPDATA_PARM *p = malloc(update_param_len);
 
     if (p) {
+        printf("填充升级参数内容\n");
         update_param_content_fill(type, p, priv_param_fill_hdl);
 
         if (succ_report.update_param_write_hdl) {
+            printf("写入升级参数\n");
             succ_report.update_param_write_hdl(succ_report.priv_param, p, update_param_len);
         }
 
 #ifdef UPDATE_LED_REMIND
+        printf("启动升级LED提示\n");
         led_update_start();
 #endif
+        printf("执行升级前的通用处理\n");
         update_before_jump_common_handle(type);
 
+        printf("设置升级参数到RAM\n");
         update_param_ram_set((u8 *)p, update_param_len);
 
         if (priv_update_jump_handle) {
+            printf("执行升级前的跳转处理\n");
             priv_update_jump_handle(type);
         }
 
         free(p);
     } else {
+        printf("分配升级参数内存失败\n");
         ASSERT(p, "malloc update param err \n");
     }
 }

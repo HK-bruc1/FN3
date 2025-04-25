@@ -149,6 +149,8 @@
     "stdint.h": "c",
     "tws_api.h": "c",
     "rcsp_adv_bluetooth.h": "c",
-    "app_main.h": "c"
+    "app_main.h": "c",
+    "log.h": "c",
+    "typedef.h": "c"
   }
 }
