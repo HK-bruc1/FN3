@@ -365,8 +365,10 @@ objs/apps/common/dev_manager/dev_reg.c.o
 objs/apps/common/dev_manager/dev_update.c.o
 -r=objs/apps/common/dev_manager/dev_update.c.o,dev_update_get_parm,pl
 -r=objs/apps/common/dev_manager/dev_update.c.o,dev_update_check,pl
+-r=objs/apps/common/dev_manager/dev_update.c.o,printf,l
 -r=objs/apps/common/dev_manager/dev_update.c.o,update_success_boot_check,l
 -r=objs/apps/common/dev_manager/dev_update.c.o,dev_manager_find_spec,
+-r=objs/apps/common/dev_manager/dev_update.c.o,puts,l
 objs/apps/common/device/gSensor/SC7A20.c.o
 objs/apps/common/device/gSensor/STK8321.c.o
 objs/apps/common/device/gSensor/da230.c.o
@@ -2593,8 +2595,8 @@ objs/apps/common/update/update.c.o
 -r=objs/apps/common/update/update.c.o,pwm_led_mode_set,l
 -r=objs/apps/common/update/update.c.o,led_update_finish,pl
 -r=objs/apps/common/update/update.c.o,update_result_deal,pl
--r=objs/apps/common/update/update.c.o,check_update_param_len,l
 -r=objs/apps/common/update/update.c.o,printf,l
+-r=objs/apps/common/update/update.c.o,check_update_param_len,l
 -r=objs/apps/common/update/update.c.o,cpu_assert_debug,l
 -r=objs/apps/common/update/update.c.o,p33_soft_reset,l
 -r=objs/apps/common/update/update.c.o,wdt_clear,l

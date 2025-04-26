@@ -200,14 +200,14 @@ static void app_poweron_check(int update)
 {
 #if (CONFIG_BT_MODE == BT_NORMAL)
     if (!update && cpu_reset_by_soft()) {
-        printf("CPU软件复位，不播放开机提示音\n");
+        printf("CPU软件复位,不播放开机提示音\n");
         app_var.play_poweron_tone = 0;
         return;
     }
 
 #if TCFG_CHARGE_OFF_POWERON_NE
     if (is_ldo5v_wakeup()) {
-        printf("LDO5V唤醒，不播放开机提示音\n");
+        printf("LDO5V唤醒,不播放开机提示音\n");
         app_var.play_poweron_tone = 0;
         return;
     }

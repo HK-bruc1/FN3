@@ -56,13 +56,13 @@ enum {
 static u8 local_press = 0;
 static u8 sibling_press = 0;
 u8 sys_fifth_click_timer = 0;
-void sys_three_click(){    
+void sys_three_click(){
     if (sys_fifth_click_timer) {
         sys_timeout_del(sys_fifth_click_timer);
         sys_fifth_click_timer = 0;
         local_press = 0;
         sibling_press = 0;
-    } 
+    }
     log_info("sys_three_click==local_press  :%d,   sibling_press :  %d",local_press,sibling_press);
 }
 
@@ -76,7 +76,7 @@ void factory_reset(void)
     sibling_press = 0;
     sys_enter_soft_poweroff(3);
     //ui_update_status(STATUS_FACTORY_RESET);
-    
+
 }
 
 static u16 poweroff_sametime_timer_id = 0;
@@ -362,16 +362,16 @@ static void lr_diff_otp_deal(u8 opt, char channel)
 #elif   (CONFIG_TWS_CHANNEL_SELECT == CONFIG_TWS_AS_RIGHT_CHANNEL)
             // APP_MUSIC_SWITCH_TONE(MODE_MUSIC_NEXT);                               /*  软件固定右耳*/
             user_send_cmd_prepare(USER_CTRL_AVCTP_OPID_NEXT, 0, NULL);
-#else   
+#else
             // APP_MUSIC_SWITCH_TONE(MODE_MUSIC_NEXT);                                   /*  左右耳共软件*/
             user_send_cmd_prepare(USER_CTRL_AVCTP_OPID_NEXT, 0, NULL);
-#endif   
-//*****************************************************************************/ 
+#endif
+//*****************************************************************************/
         }
         break;
     case ONE_KEY_CTL_VOL_UP_DOWN:
         if (channel == 'L') {
-            volume_down(1);  
+            volume_down(1);
             // APP_MUSIC_VOL_TONE(MODE_MUSIC_VOL_UP);
         } else if (channel == 'R') {
             volume_up(1);
@@ -384,11 +384,11 @@ static void lr_diff_otp_deal(u8 opt, char channel)
 #elif   (CONFIG_TWS_CHANNEL_SELECT == CONFIG_TWS_AS_RIGHT_CHANNEL)
             volume_up(1);                               /*  软件固定右耳*/
             // APP_MUSIC_VOL_TONE(MODE_MUSIC_VOL_DOWN);
-#else   
+#else
             volume_up(1);                                   /*  左右耳共软件*/
             // APP_MUSIC_VOL_TONE(MODE_MUSIC_VOL_UP);
-#endif   
-//*****************************************************************************/              
+#endif
+//*****************************************************************************/
         }
         break;
     case ONE_KEY_CTL_SIRI_ANC:
@@ -404,10 +404,10 @@ static void lr_diff_otp_deal(u8 opt, char channel)
             APP_SIRI_TONE(MODE_SIRI_OPEN);
 #elif   (CONFIG_TWS_CHANNEL_SELECT == CONFIG_TWS_AS_RIGHT_CHANNEL)
             anc_mode_next();                                 /*  软件固定右耳*/
-#else   
+#else
             APP_SIRI_TONE(MODE_SIRI_OPEN);                                  /*  左右耳共软件*/
-#endif   
-//*****************************************************************************/  
+#endif
+//*****************************************************************************/
         }
         break;
     default:
@@ -442,6 +442,7 @@ int app_earphone_key_event_handler(struct sys_event *event)
 {
     int ret = false;
     struct key_event *key = &event->u.key;
+    printf("按键事件处理开始\n");
 
     u8 key_event;
 
@@ -474,17 +475,22 @@ int app_earphone_key_event_handler(struct sys_event *event)
 #endif
     {
         key_event = key_table[key->value][key->event];
+        printf("从按键表获取按键事件: %d\n", key_event);
     }
 
     void bt_sniff_ready_clean(void);
+    printf("清除蓝牙休眠准备状态\n");
     bt_sniff_ready_clean();
 
+    printf("执行按键重映射\n");
     EARPHONE_CUSTOM_EARPHONE_KEY_REMAP(event, key, &key_event);
 #if RCSP_ADV_EN
     extern void set_key_event_by_rcsp_info(struct sys_event * event, u8 * key_event);
+    printf("设置RCSP信息的按键事件\n");
     set_key_event_by_rcsp_info(event, &key_event);
 #endif
 
+    printf("按键事件:%d, 按键值:%d, 按键类型:%d\n", key_event, key->value, key->event);
     log_info("key_event:%d %d %d\n", key_event, key->value, key->event);
 
 #if LL_SYNC_EN
@@ -496,13 +502,16 @@ int app_earphone_key_event_handler(struct sys_event *event)
     }
 #endif
 
+    printf("开始处理按键事件: %d\n", key_event);
     switch (key_event) {
 #if TCFG_APP_LINEIN_EN
     case KEY_MODE_SWITCH:
+        printf("模式切换按键\n");
         app_task_switch_next();
         break;
 #endif
     case  KEY_MUSIC_PP:
+        printf("播放/暂停按键\n");
         /* void test_esco_role_switch(u8 flag); */
         /* if (tws_api_get_role() == TWS_ROLE_MASTER) { */
         /* test_esco_role_switch(1); */
@@ -530,18 +539,23 @@ int app_earphone_key_event_handler(struct sys_event *event)
         break;
 #endif/*TCFG_AUDIO_BASS_BOOST_TEST*/
         if (get_call_status() == BT_CALL_ACTIVE) {
+            printf("通话中，挂断电话\n");
             APP_CALL_HANGUP_TONE(MODE_CALL_HANGUP);
         } else if (get_call_status() == BT_CALL_OUTGOING){
+            printf("正在拨出电话，挂断电话\n");
             user_send_cmd_prepare(USER_CTRL_HFP_CALL_HANGUP, 0, NULL);
         } else if (get_call_status() == BT_CALL_INCOMING) {
+            printf("来电，接听电话\n");
             user_send_cmd_prepare(USER_CTRL_HFP_CALL_ANSWER, 0, NULL);
         } else {
+            printf("播放/暂停音乐\n");
             // user_send_cmd_prepare(USER_CTRL_AVCTP_OPID_PLAY, 0, NULL);
             APP_MUSIC_PLAY_TONE(MODE_MUSIC_PLAY);
         }
         break;
 
     case  KEY_POWEROFF:
+        printf("关机按键\n");
         goto_poweroff_cnt = 0;
         poweroff_sametime_flag = 0;
         goto_poweroff_flag = 0;
@@ -551,54 +565,70 @@ int app_earphone_key_event_handler(struct sys_event *event)
             (BT_STATUS_PLAYING_MUSIC == get_bt_connect_status())) {
 
             if (get_call_status() == BT_CALL_INCOMING) {
+                printf("来电状态，拒接电话\n");
                 log_info("key call reject\n");
                 // user_send_cmd_prepare(USER_CTRL_HFP_CALL_HANGUP, 0, NULL);
                 APP_CALL_HANGUP_TONE(MODE_CALL_HANGUP);
                 goto_poweroff_flag = 0;
                 break;
-            } 
+            }
            if(BT_STATUS_PLAYING_MUSIC == get_bt_connect_status()) {
+                printf("音乐播放状态，播放提示音\n");
                 tone_play_index(IDEX_TONE_NORMAL, 1);
             }
         }
 
 #if (TCFG_USER_TWS_ENABLE && CONFIG_TWS_POWEROFF_SAME_TIME == 0)
         if ((u32)event->arg == KEY_EVENT_FROM_TWS) {
+            printf("来自TWS的关机命令，忽略\n");
             break;
         }
 #endif
 #if TCFG_WIRELESS_MIC_ENABLE
+        printf("关闭无线麦克风\n");
         extern void wireless_mic_change_mode(u8 mode);
         wireless_mic_change_mode(0);
 #endif
+        printf("设置关机标志\n");
         goto_poweroff_flag = 1;
+        printf("退出所有蓝牙休眠状态\n");
         user_send_cmd_prepare(USER_CTRL_ALL_SNIFF_EXIT, 0, NULL);
         break;
     case  KEY_POWEROFF_HOLD:
+        printf("关机长按\n");
 #if (TCFG_USER_TWS_ENABLE && CONFIG_TWS_POWEROFF_SAME_TIME == 0)
         if ((u32)event->arg == KEY_EVENT_FROM_TWS) {
+            printf("来自TWS的关机长按命令，忽略\n");
             break;
         }
 #endif
         log_info("poweroff flag:%d cnt:%d\n", goto_poweroff_flag, goto_poweroff_cnt);
+        printf("关机标志:%d, 计数:%d\n", goto_poweroff_flag, goto_poweroff_cnt);
 
         if (goto_poweroff_flag) {
             goto_poweroff_cnt++;
+            printf("关机计数增加: %d\n", goto_poweroff_cnt);
 
 #if CONFIG_TWS_POWEROFF_SAME_TIME
             if (goto_poweroff_cnt == POWER_OFF_CNT) {
+                printf("关机计数达到阈值\n");
                 if (get_tws_sibling_connect_state()) {
+                    printf("TWS连接状态，同步关机\n");
                     if ((u32)event->arg != KEY_EVENT_FROM_TWS) {
+                        printf("发送同步关机命令到对耳\n");
                         tws_api_sync_call_by_uuid('T', SYNC_CMD_POWER_OFF_TOGETHER, TWS_SYNC_TIME_DO);
                     } else {
+                        printf("来自对耳的命令，减少计数\n");
                         goto_poweroff_cnt--;
                     }
                 } else {
+                    printf("单耳模式，直接关机\n");
                     sys_enter_soft_poweroff(NULL);
                 }
             }
 #else
             if (goto_poweroff_cnt >= POWER_OFF_CNT) {
+                printf("关机计数达到阈值，执行关机\n");
                 goto_poweroff_cnt = 0;
                 sys_enter_soft_poweroff(NULL);
             }
@@ -684,7 +714,7 @@ int app_earphone_key_event_handler(struct sys_event *event)
         log_info("KEY_FACTORY_RESET");
         // if(get_bt_connect_status()==BT_STATUS_WAITINT_CONN){
         //     user_send_cmd_prepare(USER_CTRL_DEL_ALL_REMOTE_INFO,0,NULL); //disconneted ihpone
-                                
+
         //     bt_tws_remove_pairs();
         //     ui_update_status(STATUS_FACTORY_RESET);
         // }
@@ -706,7 +736,7 @@ int app_earphone_key_event_handler(struct sys_event *event)
                     break;
                 }
         }
-        
+
         if (!sys_fifth_click_timer) {
             sys_fifth_click_timer = sys_timeout_add(NULL,sys_three_click,500);
         }
@@ -731,9 +761,9 @@ int app_earphone_key_event_handler(struct sys_event *event)
     case KEY_LOW_LANTECY:
         bt_set_low_latency_mode(!bt_get_low_latency_mode());
         break;
-     
+
     case KEY_DUT_MODE:
-        
+
         bt_bredr_enter_dut_mode(1, 1);
         break;
 #if TCFG_EARTCH_EVENT_HANDLE_ENABLE
